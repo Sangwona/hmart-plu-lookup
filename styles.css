@@ -1,0 +1,83 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap");
+body {
+  font-family: "Inter", sans-serif;
+  background-color: #f3f4f6;
+}
+.produce-icon {
+  font-size: 5rem;
+  line-height: 1;
+}
+
+/* Numeric Keypad Styles */
+.keypad-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  max-width: 200px;
+  margin: 0 auto;
+}
+
+.keypad-button {
+  width: 50px;
+  height: 50px;
+  border: 2px solid #d1d5db;
+  border-radius: 8px;
+  background-color: #ffffff;
+  color: #374151;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.keypad-button:hover {
+  background-color: #f3f4f6;
+  border-color: #9ca3af;
+}
+
+.keypad-button:active {
+  background-color: #e5e7eb;
+  transform: scale(0.95);
+}
+
+.keypad-button.clear {
+  background-color: #fef3c7;
+  color: #92400e;
+  border-color: #f59e0b;
+}
+
+.keypad-button.clear:hover {
+  background-color: #fde68a;
+}
+
+.keypad-button.delete {
+  background-color: #fee2e2;
+  color: #dc2626;
+  border-color: #f87171;
+}
+
+.keypad-button.delete:hover {
+  background-color: #fecaca;
+}
+
+.code-display {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.code-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #d1d5db;
+  transition: background-color 0.2s ease;
+}
+
+.code-dot.filled {
+  background-color: #4f46e5;
+}

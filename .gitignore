@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+
+# Supabase configuration (contains sensitive API keys)
+config.js
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+
+# Logs
+*.log
+npm-debug.log*
