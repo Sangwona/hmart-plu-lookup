@@ -3,10 +3,6 @@ body {
   font-family: "Inter", sans-serif;
   background-color: #f3f4f6;
 }
-.produce-icon {
-  font-size: 5rem;
-  line-height: 1;
-}
 
 /* Numeric Keypad Styles */
 .keypad-container {

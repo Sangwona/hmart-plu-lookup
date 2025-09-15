@@ -6,14 +6,8 @@ let produceItems = [];
 let editItemId = null;
 
 // DOM Elements
-let toggleAdminBtn,
-  headerTitle,
-  cashierView,
-  adminDashboard,
-  searchInput,
-  produceGrid,
-  messageBox;
-let produceForm, formTitle, nameInput, pluCodeInput, iconInput, cancelEditBtn;
+let toggleAdminBtn, headerTitle, cashierView, adminDashboard, searchInput, produceGrid, messageBox;
+let produceForm, formTitle, nameInput, pluCodeInput, descriptionInput, cancelEditBtn;
 let csvUploadInput, exportCsvBtn, adminTableBody;
 
 // --- Core Application Logic ---
@@ -55,24 +49,14 @@ function renderProduceItems(items) {
     itemCard.className =
       "bg-white rounded-xl shadow-md overflow-hidden transform transition-transform hover:scale-105 cursor-pointer";
 
-    let imageHtml;
-    if (isUrl(item.icon)) {
-      imageHtml = `<img src="${item.icon}" alt="${item.name}" onerror="this.onerror=null;this.src='https://placehold.co/150x150/e2e8f0/64748b?text=No%0AImage';" class="object-cover h-24 w-24 rounded-full border-2 border-white shadow-sm">`;
-    } else {
-      imageHtml = `<span class="produce-icon">${item.icon}</span>`;
-    }
-
     itemCard.innerHTML = `
-            <div class="h-32 w-full flex items-center justify-center p-2 bg-gray-100">
-                ${imageHtml}
-            </div>
+       
             <div class="p-3 text-center">
                 <h3 class="font-bold text-gray-800 truncate">${item.name}</h3>
                 <p class="text-sm text-gray-500 font-mono mt-1">${item.plu_code}</p>
             </div>
         `;
-    itemCard.onclick = () =>
-      showMessage(`PLU Code for ${item.name} is: ${item.plu_code}`, "success");
+    itemCard.onclick = () => showMessage(`${item.name} is: ${item.plu_code}`, "success");
     produceGrid.appendChild(itemCard);
   });
 }
@@ -81,8 +65,7 @@ function renderProduceItems(items) {
 function searchProduce() {
   const query = searchInput.value.toLowerCase();
   const filteredItems = produceItems.filter(
-    (item) =>
-      item.name.toLowerCase().includes(query) || item.plu_code.includes(query)
+    (item) => item.name.toLowerCase().includes(query) || item.plu_code.includes(query)
   );
   renderProduceItems(filteredItems);
 }
@@ -96,17 +79,10 @@ function renderAdminTable() {
     const row = document.createElement("tr");
     row.className = "hover:bg-gray-50 transition-colors";
 
-    let iconHtml;
-    if (isUrl(item.icon)) {
-      iconHtml = `<img src="${item.icon}" alt="${item.name}" onerror="this.onerror=null;this.src='https://placehold.co/24x24';" class="h-6 w-6 rounded">`;
-    } else {
-      iconHtml = `<span>${item.icon}</span>`;
-    }
-
     row.innerHTML = `
             <td class="px-4 py-3 text-sm font-medium text-gray-900">${item.name}</td>
             <td class="px-4 py-3 text-sm text-gray-500 font-mono">${item.plu_code}</td>
-            <td class="px-4 py-3 text-sm text-gray-500">${iconHtml}</td>
+            <td class="px-4 py-3 text-sm text-gray-500 font-mono">${item.description}</td>
             <td class="px-4 py-3 text-right text-sm font-medium whitespace-nowrap">
                 <button data-id="${item.id}" class="edit-btn text-indigo-600 hover:text-indigo-900 transition-colors mr-2">Edit</button>
                 <button data-id="${item.id}" class="delete-btn text-red-600 hover:text-red-900 transition-colors">Delete</button>
@@ -121,7 +97,7 @@ async function handleFormSubmit(event) {
   event.preventDefault();
   const name = nameInput.value;
   const plu_code = pluCodeInput.value;
-  const icon = iconInput.value || "";
+  const description = descriptionInput.value || "";
 
   try {
     if (editItemId) {
@@ -129,7 +105,7 @@ async function handleFormSubmit(event) {
       await dbManager.updateProduceItem(editItemId, {
         name,
         plu_code,
-        icon,
+        description,
       });
       showMessage("Item updated successfully.", "success");
     } else {
@@ -137,7 +113,7 @@ async function handleFormSubmit(event) {
       await dbManager.addProduceItem({
         name,
         plu_code,
-        icon,
+        description,
       });
       showMessage("Item added successfully.", "success");
     }
@@ -165,7 +141,7 @@ function handleEditClick(event) {
     editItemId = itemToEdit.id;
     nameInput.value = itemToEdit.name;
     pluCodeInput.value = itemToEdit.plu_code;
-    iconInput.value = itemToEdit.icon;
+    descriptionInput.value = itemToEdit.description;
     formTitle.textContent = "Edit Item";
     cancelEditBtn.classList.remove("hidden");
   }
@@ -204,14 +180,14 @@ function handleCsvImport(event) {
     // Skip header row
     for (let i = 1; i < lines.length; i++) {
       const line = lines[i].trim();
-      const [name, plu_code, icon] = line.split(",");
+      const [name, plu_code, description] = line.split(",");
 
       if (name && plu_code) {
         const newItem = {
           id: crypto.randomUUID(),
           name: name.trim(),
           plu_code: plu_code.trim(),
-          icon: icon ? icon.trim() : "",
+          description: description ? description.trim() : "",
         };
 
         // Always add as new item since id is auto-generated
@@ -227,10 +203,8 @@ function handleCsvImport(event) {
 
 // Handle CSV export
 function handleCsvExport() {
-  const headers = ["name", "plu_code", "icon"];
-  const rows = produceItems.map((item) =>
-    headers.map((header) => item[header]).join(",")
-  );
+  const headers = ["name", "plu_code", "description"];
+  const rows = produceItems.map((item) => headers.map((header) => item[header]).join(","));
   const csvContent = [headers.join(","), ...rows].join("\n");
   const blob = new Blob([csvContent], {
     type: "text/csv;charset=utf-8;",
@@ -260,7 +234,7 @@ async function initializeApp() {
   formTitle = document.getElementById("form-title");
   nameInput = document.getElementById("name");
   pluCodeInput = document.getElementById("plu_code");
-  iconInput = document.getElementById("icon");
+  descriptionInput = document.getElementById("description");
   cancelEditBtn = document.getElementById("cancel-edit-btn");
   csvUploadInput = document.getElementById("csv-upload");
   exportCsvBtn = document.getElementById("export-csv-btn");
@@ -291,8 +265,7 @@ async function initializeApp() {
       cancelEditBtn.classList.add("hidden");
     });
   }
-  if (csvUploadInput)
-    csvUploadInput.addEventListener("change", handleCsvImport);
+  if (csvUploadInput) csvUploadInput.addEventListener("change", handleCsvImport);
   if (exportCsvBtn) exportCsvBtn.addEventListener("click", handleCsvExport);
 
   // Initialize admin manager

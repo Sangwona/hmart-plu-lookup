@@ -100,17 +100,17 @@ To access the admin panel:
 ### Import Format (3 columns, no headers):
 
 ```
-name,plu_code,icon
-Apple,4011,🍎
-Banana,4012,🍌
+name,plu_code,description
+Apple,4011,description
+Banana,4012,organic
 ```
 
 ### Export Format (3 columns with headers):
 
 ```
-name,plu_code,icon
-Apple,4011,🍎
-Banana,4012,🍌
+name,plu_code,description
+Apple,4011,description
+Banana,4012,organic
 ```
 
 ## License
